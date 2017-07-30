@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>ECoaching App</title>
+</head>
+<body>
+
+    <div>
+        <h2>All Countries</h2>
+        <ul id="countries" />
+    </div>
+    <div>
+        <h2>Search States by CountryID</h2>
+        <input type="text" id="stateId" size="5" />
+        <input type="button" value="Search" onclick="find();" />
+        <ul id="states" />
+    </div>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+
+        function formatCountry(item) {
+            return item.CountryId + ': ' + item.CountryName;
+        }
+
+        function formatState(item) {
+            return item.StateId + ': ' + item.StateName;
+        }
+
+        $(document).ready(function () {
+            // Send an AJAX request
+            $.getJSON('api/countries')
+                .done(function (data) {
+                    // On success, 'data' contains a list of products.
+                    $.each(data, function (key, item) {
+                        // Add a list item for the product.
+                        $('<li>', { text: formatCountry(item) }).appendTo($('#countries'));
+                    });
+                });
+        });    
+
+        function find() {
+            var id = $('#stateId').val();
+            $("#states").empty();
+            $.getJSON('api/countries/' + id + '/states')
+              .done(function (data) {
+                  // On success, 'data' contains a list of products.
+                  $.each(data, function (key, item) {
+                      // Add a list item for the product.
+                      $('<li>', { text: formatState(item) }).appendTo($('#states'));
+                  });
+              });
+        }
+    </script>
+</body>
+</html>
